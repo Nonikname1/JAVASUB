@@ -19,4 +19,5 @@ public class Student {
 
     public boolean getTaskStatus(int index) { return tasks[index]; }
     public void setTaskStatus(int index, boolean status) { tasks[index] = status; }
+    public boolean[] getTasks() { return tasks; }
 }

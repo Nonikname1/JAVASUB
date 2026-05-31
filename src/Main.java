@@ -1,7 +1,8 @@
+import db.SchemaInitializer;
 import repository.GroupRepository;
 import repository.StudentRepository;
-import repository.impl.InMemoryGroupRepository;
-import repository.impl.InMemoryStudentRepository;
+import repository.impl.JdbcGroupRepository;
+import repository.impl.JdbcStudentRepository;
 import service.GroupService;
 import service.StudentService;
 import service.impl.GroupServiceImpl;
@@ -11,8 +12,10 @@ import ui.ConsoleUI;
 
 public class Main {
     public static void main(String[] args) {
-        GroupRepository groupRepository = new InMemoryGroupRepository();
-        StudentRepository studentRepository = new InMemoryStudentRepository();
+        SchemaInitializer.init();
+
+        GroupRepository groupRepository = new JdbcGroupRepository();
+        StudentRepository studentRepository = new JdbcStudentRepository();
 
         GroupService groupService = new GroupServiceImpl(groupRepository, studentRepository);
         StudentService studentService = new StudentServiceImpl(studentRepository, groupRepository);

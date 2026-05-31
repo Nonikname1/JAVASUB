@@ -16,6 +16,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupServiceImpl(GroupRepository groupRepository, StudentRepository studentRepository) {
         this.groupRepository = groupRepository;
         this.studentRepository = studentRepository;
+        this.nextId = groupRepository.findMaxId() + 1;
     }
 
     @Override
@@ -27,8 +28,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroup(int id) {
-        groupRepository.deleteById(id);
         studentRepository.deleteByGroupId(id);
+        groupRepository.deleteById(id);
     }
 
     @Override

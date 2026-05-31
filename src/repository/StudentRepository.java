@@ -10,4 +10,5 @@ public interface StudentRepository {
     List<Student> findByGroupId(int groupId);
     void deleteById(int id);
     void deleteByGroupId(int groupId);
+    int findMaxId();
 }

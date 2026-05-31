@@ -48,4 +48,9 @@ public class InMemoryStudentRepository implements StudentRepository {
             }
         }
     }
+
+    @Override
+    public int findMaxId() {
+        return store.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+    }
 }

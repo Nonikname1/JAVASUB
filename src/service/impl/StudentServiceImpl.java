@@ -16,6 +16,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentServiceImpl(StudentRepository studentRepository, GroupRepository groupRepository) {
         this.studentRepository = studentRepository;
         this.groupRepository = groupRepository;
+        this.nextId = studentRepository.findMaxId() + 1;
     }
 
     @Override
@@ -43,6 +44,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Студент не найден: " + studentId));
         student.setTaskStatus(taskIndex, status);
+        studentRepository.save(student);
     }
 
     @Override

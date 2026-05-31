@@ -10,4 +10,5 @@ public interface GroupRepository {
     List<Group> findAll();
     void deleteById(int id);
     boolean existsById(int id);
+    int findMaxId();
 }

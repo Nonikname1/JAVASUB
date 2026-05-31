@@ -36,4 +36,9 @@ public class InMemoryGroupRepository implements GroupRepository {
     public boolean existsById(int id) {
         return store.containsKey(id);
     }
+
+    @Override
+    public int findMaxId() {
+        return store.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+    }
 }

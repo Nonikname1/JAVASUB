@@ -26,10 +26,12 @@ public class ConsoleUI {
             System.out.println("\n--- Главное меню ---");
             System.out.println("1. Управление группами");
             System.out.println("2. Управление студентами");
+            System.out.println("3. Отчёт по группе");
             System.out.println("0. Выход");
             switch (reader.readInt("Выбор: ")) {
                 case 1: handleGroups();   break;
                 case 2: handleStudents(); break;
+                case 3: handleReport();   break;
                 case 0: running = false;  break;
                 default: System.out.println("Неверный выбор.");
             }
@@ -168,6 +170,53 @@ public class ConsoleUI {
         boolean status = reader.readBoolean("Сдал задачу?");
         studentService.updateTaskStatus(studentId, taskNum - 1, status);
         System.out.println("Статус задачи обновлён.");
+    }
+
+    // ── Отчёт ────────────────────────────────────────────────────────────────
+
+    private void handleReport() {
+        showAllGroups();
+        int groupId = reader.readInt("ID группы: ");
+        Optional<Group> group = groupService.getGroupById(groupId);
+        if (!group.isPresent()) { System.out.println("Группа не найдена."); return; }
+
+        List<Student> students = studentService.getStudentsByGroup(groupId);
+        if (students.isEmpty()) { System.out.println("В группе нет студентов."); return; }
+
+        System.out.println("\nОтчёт по группе: " + group.get().getName());
+
+        System.out.println("\nСдали все задачи:");
+        boolean anyDone = false;
+        for (Student s : students) {
+            if (s.getTaskStatus(0) && s.getTaskStatus(1) && s.getTaskStatus(2)) {
+                System.out.println("  + " + s.getName());
+                anyDone = true;
+            }
+        }
+        if (!anyDone) System.out.println("  (никто)");
+
+        System.out.println("\nЕсть несданные задачи:");
+        boolean anyPending = false;
+        for (Student s : students) {
+            if (!s.getTaskStatus(0) || !s.getTaskStatus(1) || !s.getTaskStatus(2)) {
+                StringBuilder missing = new StringBuilder();
+                for (int i = 0; i < 3; i++) {
+                    if (!s.getTaskStatus(i)) {
+                        if (missing.length() > 0) missing.append(", ");
+                        missing.append("Задача ").append(i + 1);
+                    }
+                }
+                System.out.println("  - " + s.getName() + " (не сдал: " + missing + ")");
+                anyPending = true;
+            }
+        }
+        if (!anyPending) System.out.println("  (нет)");
+
+        int done = 0;
+        for (Student s : students) {
+            if (s.getTaskStatus(0) && s.getTaskStatus(1) && s.getTaskStatus(2)) done++;
+        }
+        System.out.printf("%nИтого: %d из %d студентов сдали все задачи%n", done, students.size());
     }
 
     // ── Вспомогательные ──────────────────────────────────────────────────────
